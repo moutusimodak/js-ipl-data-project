@@ -5,22 +5,22 @@ const matches = require('../data/matches.js');
 const outputFilePath = path.join(__dirname, '../../src/public/output/won-toss-won-match.json');
 
 function matchWinner() {
-    const res = {}; 
+    const result = {}; 
 
     for (let i = 0; i < matches.length; i++) {
         const toss = matches[i].toss_winner;
         const matchWin = matches[i].winner;
         
         if(toss === matchWin){
-            if(!res[toss]){
-                res[toss]=0
+            if(!result[toss]){
+                result[toss]=0
             }
-            res[toss]++
+            result[toss]++
         }
     }
 
-    console.log(res);
-    return res
+    console.log(result);
+    return result
 }
 
 const data = matchWinner();

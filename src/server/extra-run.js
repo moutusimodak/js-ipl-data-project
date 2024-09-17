@@ -6,7 +6,7 @@ const deliveries = require('../data/deliveries.js');
 const outputFilePath = path.join(__dirname, '../../src/public/output/extra-run.json');
 
 function extraRuns() {
-    let res = {};
+    let result = {};
     let matchIds = [];
 
     for (let i = 0; i < matches.length; i++) {
@@ -25,14 +25,14 @@ function extraRuns() {
             const teamName = deliveries[i].bowling_team;
             const run = Number(deliveries[i].extra_runs);
 
-            if(!res[teamName]){
-                res[teamName]=0
+            if(!result[teamName]){
+                result[teamName]=0
             }          
-            res[teamName]+=run;
+            result[teamName]+=run;
         }
     }
 
-    return res; 
+    return result; 
 }
 
 const data = extraRuns();

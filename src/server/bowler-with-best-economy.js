@@ -5,32 +5,32 @@ const deliveries = require('../data/deliveries.js');
 const outputFilePath = path.join(__dirname, '../../src/public/output/bowler-with-best-economy.json');
 
 function BestEconomy() {
-    const res = {};
+    const result = {};
 
     for (let i = 0; i < deliveries.length; i++) {
 
         if (deliveries[i].is_super_over !== '0') {
             const BowlerName = deliveries[i].bowler;
 
-            if (!res[BowlerName]) {
-                res[BowlerName] = { totalruns: 0, totalballs: 0 };
+            if (!result[BowlerName]) {
+                result[BowlerName] = { totalruns: 0, totalballs: 0 };
             }
 
             if (deliveries[i].wide_runs === '0' && deliveries[i].noball_runs === '0') {
-                res[BowlerName].totalballs++;
+                result[BowlerName].totalballs++;
             }
 
             const runsconceded = Number(deliveries[i].total_runs) 
 
-            res[BowlerName].totalruns += runsconceded;
+            result[BowlerName].totalruns += runsconceded;
         }
     }
 
     let bestEconomyBowler = null;
     let bestEconomyRate = Infinity;
 
-    for (const bowler in res) {
-        const stats = res[bowler];
+    for (const bowler in result) {
+        const stats = result[bowler];
         const overs = stats.totalballs / 6;  
 
         if (overs > 0) { 
