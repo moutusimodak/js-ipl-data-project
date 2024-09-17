@@ -20,7 +20,7 @@ function testMatchesPerYear() {
 const data = testMatchesPerYear();
 fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 2), 'utf8');
 
-console.log('success', outputFilePath);
+console.log('successfully submitted', outputFilePath);
 
 
 

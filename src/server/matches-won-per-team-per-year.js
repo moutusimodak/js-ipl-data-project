@@ -5,26 +5,25 @@ const matches = require('../data/matches.js');
 
 const outputFilePath = path.join(__dirname, '../../src/public/output/matchesPerTeamPerYear.json');
 function matchWonPerTeamPerYear() {
-    const res = {};
+    const result = {};
 
     for (let i = 0; i < matches.length; i++) {
         const year = matches[i].season;
         const winner = matches[i].winner
 
         if (winner) {
-            if (!res[year]) {
-                res[year] = {};
+            if (!result[year]) {
+                result[year] = {};
             }
-            if (!res[year][winner]) {
-                res[year][winner] = 0;
+            if (!result[year][winner]) {
+                result[year][winner] = 0;
             }
-            res[year][winner]++;
+            result[year][winner]++;
         }
     }
-    return res;
+    return result;
 }
-
 const data = matchWonPerTeamPerYear();
-fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 2), 'utf8');
+fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 4), 'utf8');
 
-console.log('success', outputFilePath);
+console.log('successfully submitted', outputFilePath);
