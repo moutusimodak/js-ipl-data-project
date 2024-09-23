@@ -1,33 +1,31 @@
-const fs = require('fs');
-const path = require('path');
-const matches = require('../data/matches.js');
-const deliveries = require('../data/deliveries.js');
-
-const outputFilePath = path.join(__dirname, '../../src/public/output/extra-run.json');
-
-function extraRuns() {
+function extraRuns(matches, deliveries) {
     let result = {};
     let matchIds = [];
 
+     // fetching match IDs 
     for (let i = 0; i < matches.length; i++) {
       
         if (matches[i].season === '2016') {
             matchIds.push(matches[i].id);             
         }
 
-        // console.log(matchIds);
     }
 
-  
+    // Calculate extra runs for each team in the selected matches
     for (let i = 0; i < deliveries.length; i++) {
         
         if (matchIds.includes(deliveries[i].match_id)) {
             const teamName = deliveries[i].bowling_team;
+         
+            
             const run = Number(deliveries[i].extra_runs);
+   
+            
 
             if(!result[teamName]){
                 result[teamName]=0
-            }          
+            }     
+            // Add the extra runs to the team's total     
             result[teamName]+=run;
         }
     }
@@ -35,9 +33,4 @@ function extraRuns() {
     return result; 
 }
 
-const data = extraRuns();
-
-
-fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 2), 'utf8');
-
-console.log('success: ', outputFilePath);
+module.exports=extraRuns;

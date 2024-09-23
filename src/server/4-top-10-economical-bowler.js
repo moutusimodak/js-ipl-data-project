@@ -1,12 +1,4 @@
-const fs = require('fs');
-const path = require('path');
-const matches = require('../data/matches.js');
-const deliveries = require('../data/deliveries.js');
-
-const outputFilePath = path.join(__dirname, '../../src/public/output/economical-bowler.json');
-
-
-function economicBowler() {
+function economicBowler(matches, deliveries) {
     let matchIds = []
     let result = {}
     for (let i = 0; i < matches.length; i++) {
@@ -17,40 +9,41 @@ function economicBowler() {
         if (matchIds.includes(deliveries[i].match_id)) {
             const bowler = deliveries[i].bowler
             const totalRun = Number(deliveries[i].total_runs)
-
+            // Count  valid balls
             let ball = 0
             if (deliveries[i].wide_runs == 0 && deliveries[i].noball_runs == 0) {
                 ball = 1
             }
+
+            // Initialize bowler's data if not  present
             if (!result[bowler]) {
                 result[bowler] = { ball: 0, totalRun: 0 }
             }
             result[bowler].ball += ball
-            // console.log(res);
-           
-            
-            
+
             result[bowler].totalRun += totalRun
-            
-            
+
+
         }
     }
-    // console.log(result);
-    
+
+
     const rating = []
     for (const key in result) {
-        //console.log(key);
         console.log(result[key]);
-        
-        
+
+
         const { totalRun, ball } = result[key];
-        console.log(ball)
+
         let overs = ball / 6
 
+        // Calculate economy rate
         const ecoRate = ((totalRun / overs).toFixed(2));
         rating.push({ key, ecoRate })
     }
+    //sorting the economy rate
     rating.sort((a, b) => parseFloat(a.ecoRate) - parseFloat(b.ecoRate));
+    // Get the top 10 economical bowlers
     const top10Bowlers = rating.slice(0, 10);
 
     return top10Bowlers;
@@ -58,10 +51,4 @@ function economicBowler() {
 }
 
 
-
-const data = economicBowler();
-
-
-fs.writeFileSync(outputFilePath, JSON.stringify(data, null, 2), 'utf8');
-
-console.log('success: ', outputFilePath);
+module.exports = economicBowler;

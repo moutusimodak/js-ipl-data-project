@@ -25,4 +25,4 @@ function convertAndWriteFilesSync() {
   csvToObjectSync(deliveriesPath);
 }
 
-convertAndWriteFilesSync();
+// convertAndWriteFilesSync();
