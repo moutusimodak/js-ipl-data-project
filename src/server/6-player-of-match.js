@@ -1,38 +1,31 @@
 function playerOfMatch(matches) {
-    let result = {};
-    let topPlayerPerSeason = {};
 
-    for (let i = 0; i < matches.length; i++) {
-        const player = matches[i].player_of_match;
-        const year = matches[i].season;
-     // Initialize  season object if  not exist
-        if (!result[year]) {
-            result[year] = {};
+    const awardsBySeason = matches.reduce((acc, match) => {
+        const player = match.player_of_match;
+        const year = match.season;
+
+        // Initialize the season object if it doesn't exist
+        if (!acc[year]) {
+            acc[year] = {};
         }
-    
-    // Initialize the player's count if not exist
-        if (!result[year][player]) {
-            result[year][player] = 0;
-        }
-        result[year][player]++;
-    }
 
-    // Find the top player for each season
-    for (const year in result) {
-        let topPlayer = null;
-        let maxAwards = 0;
+        // Increment the player's count 
+        acc[year][player] = (acc[year][player] || 0) + 1;
 
-        for (const player in result[year]) {
-            if (result[year][player] > maxAwards) {
-                maxAwards = result[year][player];
-                topPlayer = player;
-            }
-        }
-        topPlayerPerSeason[year] = { player: topPlayer, awards: maxAwards };
-    }
+        return acc;
+    }, {});
+    // Find  top player for each season
+    const topPlayers = Object.keys(awardsBySeason).reduce((acc, year) => {
+        const players = awardsBySeason[year];
+        const topPlayer = Object.entries(players).reduce((top, [player, awards]) => {
+            return awards > top.awards ? { player, awards } : top;
+        }, { player: null, awards: 0 });
 
-    return topPlayerPerSeason;
+        acc[year] = topPlayer;
+        return acc;
+    }, {});
+
+    return topPlayers;
 }
-
 
 module.exports = playerOfMatch;

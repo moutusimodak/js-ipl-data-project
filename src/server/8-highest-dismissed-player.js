@@ -1,44 +1,39 @@
 function dismissedByAnotherPlayer(deliveries) {
-    const res = {};
+    const result = {};
     let maxDismissed = 0;
     let topBowler = '';
     let topBatsman = '';
 
-
-    for (let i = 0; i < deliveries.length; i++) {
-        let bowlerName = deliveries[i].bowler;
-        let batsManName = deliveries[i].batsman;
-        let dismissedPlayer = deliveries[i].player_dismissed;
-        // Check if a player was dismissed
-        if (dismissedPlayer) {
-
-            // Initialize the bowler's entry in the result  if not exist
-            if (!res[bowlerName]) {
-                res[bowlerName] = {};
+    deliveries.reduce((acc, delivery) => {
+        if (delivery.player_dismissed) {
+          
+            if (!acc[delivery.bowler]) {
+                acc[delivery.bowler] = {};
             }
-            // Initialize the batsman's dismissal count 
-            if (!res[bowlerName][batsManName]) {
-                res[bowlerName][batsManName] = 0;
+
+        
+            if (!acc[delivery.bowler][delivery.batsman]) {
+                acc[delivery.bowler][delivery.batsman] = 0;
             }
-            res[bowlerName][batsManName]++;
 
-            if (res[bowlerName][batsManName] > maxDismissed) {
-                // Update maximum dismissals
-                maxDismissed = res[bowlerName][batsManName];
+            acc[delivery.bowler][delivery.batsman]++;
 
-                topBowler = bowlerName;
-                topBatsman = batsManName;
+            if (acc[delivery.bowler][delivery.batsman] > maxDismissed) {
+                maxDismissed = acc[delivery.bowler][delivery.batsman];
+                topBowler = delivery.bowler;
+                topBatsman = delivery.batsman;
             }
         }
-    }
+        return acc; 
+    }, result);
 
-    const result = {
-
+    const res = {
         bowler: topBowler,
         batsman: topBatsman,
         count: maxDismissed
     };
 
-    return result;
+    return res;
 }
+
 module.exports = dismissedByAnotherPlayer;

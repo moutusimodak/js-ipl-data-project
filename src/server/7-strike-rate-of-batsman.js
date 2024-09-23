@@ -1,46 +1,49 @@
 function strikeRate(matches, deliveries) {
-    let strikeRates = {};
-    let matchIds = {};
+    const res = {};
 
-    for (let i = 0; i < matches.length; i++) {
-        matchIds[matches[i].id] = matches[i].season;
+    const matchId = matches.map(match => match.id);
 
-    }
+    deliveries.forEach(delivery => {
 
-    let batsMan = {};
+        if (matchId.includes(delivery.match_id)) {
 
-    for (let i = 0; i < deliveries.length; i++) {
-        const season = matchIds[deliveries[i].match_id];
-        const batsManName = deliveries[i].batsman;
-        // Initialize the season for the batsman if not exist
-        if (!batsMan[season]) {
-            batsMan[season] = {};
+            const match = matches.find(m => m.id === delivery.match_id);
+            
+            const year = match.season;
+            const batsman = delivery.batsman;
+
+
+            if (!res[year]) {
+                res[year] = {};
+            }
+
+            if (!res[year][batsman]) {
+                res[year][batsman] = { runs: 0, balls: 0 };
+            }
+
+            if (delivery.noball_runs === '0' && delivery.wide_runs === '0') {
+                res[year][batsman].balls += 1;
+            }
+
+            res[year][batsman].runs += Number(delivery.batsman_runs);
         }
-        if (!batsMan[season][batsManName]) {
-            batsMan[season][batsManName] = { runs: 0, balls: 0 };
-        }
-        // Update runs scored by the batsman
-        batsMan[season][batsManName].runs += Number(deliveries[i].batsman_runs);
+    });
 
-        if (deliveries[i]['wide_runs'] === '0' && deliveries[i]['noball_runs'] === '0') {
-            batsMan[season][batsManName].balls += 1;
-        }
-    }
+    const strikeRates = {};
 
 
-    for (let season in batsMan) {
-        strikeRates[season] = {};
-        for (let batsManName in batsMan[season]) {
-            const runs = batsMan[season][batsManName].runs;
-            const balls = batsMan[season][batsManName].balls;
-            // Calculate strike rate
+    Object.entries(res).forEach(([year, batsmanData]) => {
+        strikeRates[year] = Object.entries(batsmanData).reduce((acc, [batsmanName, { runs, balls }]) => {
+            const strikeRate = balls > 0 ? (runs / balls) * 100 : 0
+            acc[batsmanName] = strikeRate.toFixed(2);
 
-            const strikeRate = balls > 0 ? (runs / balls) * 100 : 0;
-            strikeRates[season][batsManName] = strikeRate;
-        }
-    }
+            return acc;
+        }, {});
+    });
 
-    return strikeRates;
+  return strikeRates
+
+
 }
 
 module.exports = strikeRate;

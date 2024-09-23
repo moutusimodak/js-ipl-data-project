@@ -1,19 +1,16 @@
 function testMatchesPerYear(matches) {
-    const matchesPerYear = {};
-    for (let i = 0; i < matches.length; i++) {
-        const season = matches[i].season;
-        // If season is not already a key in the object, initializing
-        if (!matchesPerYear[season]) {
-            matchesPerYear[season] = 0;
-        }
+    const matchesPerYear = matches
+        .map(match => match.season)
+        .reduce((acc, year) => {
+            acc[year] = (acc[year] || 0) + 1;
+            return acc;
+        }, {});
 
-        // Increment the count
-        matchesPerYear[season]++;
-    }             
-                   
-    return matchesPerYear;
+    return matchesPerYear
+
+
 }
-module.exports=testMatchesPerYear;
+module.exports = testMatchesPerYear;
 
 
 

@@ -1,19 +1,13 @@
 function matchWinner(matches) {
-    const result = {};
-
-    for (let i = 0; i < matches.length; i++) {
-        const toss = matches[i].toss_winner;
-        const matchWin = matches[i].winner;
-        // Checking both won the toss also won the match
-        if (toss === matchWin) {
-            // Initialize the team's win count if it doesn't exist
-            if (!result[toss]) {
-                result[toss] = 0
-            }
-            result[toss]++
-        }
+    const result ={};
+matches.map(match=>{
+    if(match.toss_winner=== match.winner){
+        if(!result[match.toss_winner]){
+            result[match.toss_winner]=0;
+        }      
+            result[match.toss_winner]++;
     }
-
-    return result
+})
+return result
 }
 module.exports = matchWinner;

@@ -1,53 +1,37 @@
 function economicBowler(matches, deliveries) {
-    let matchIds = []
-    let result = {}
-    for (let i = 0; i < matches.length; i++) {
-        if (matches[i].season === '2015') {
-            matchIds.push(matches[i].id)
-        }
-    } for (let i = 0; i < deliveries.length; i++) {
-        if (matchIds.includes(deliveries[i].match_id)) {
-            const bowler = deliveries[i].bowler
-            const totalRun = Number(deliveries[i].total_runs)
-            // Count  valid balls
-            let ball = 0
-            if (deliveries[i].wide_runs == 0 && deliveries[i].noball_runs == 0) {
-                ball = 1
+    const matchIds = matches
+        .filter(match => match.season === '2015')
+        .map(match => match.id);
+
+
+    const result = deliveries.reduce((acc, delivery) => {
+        if (matchIds.includes(delivery.match_id)) {
+            const ball = delivery.noball_runs === '0' && delivery.wide_runs === '0';
+
+            if (!acc[delivery.bowler]) {
+                acc[delivery.bowler] = { balls: 0, runs: 0 };
             }
 
-            // Initialize bowler's data if not  present
-            if (!result[bowler]) {
-                result[bowler] = { ball: 0, totalRun: 0 }
+            if (ball) {
+                acc[delivery.bowler].balls++;
             }
-            result[bowler].ball += ball
 
-            result[bowler].totalRun += totalRun
-
-
+            acc[delivery.bowler].runs += Number(delivery.total_runs);
         }
-    }
+        return acc;
+    }, {});
+    const economyRates = Object.keys(result).map(bowler => {
+        let overs = result[bowler].balls / 6;
+        let economyRate = result[bowler].runs / overs;
 
+        return { bowler, economyRate };
+    })
 
-    const rating = []
-    for (const key in result) {
-        console.log(result[key]);
+    const top10EconomicalBowlers = economyRates
+        .sort((a, b) => a.economyRate - b.economyRate)
+        .slice(0, 10);
 
-
-        const { totalRun, ball } = result[key];
-
-        let overs = ball / 6
-
-        // Calculate economy rate
-        const ecoRate = ((totalRun / overs).toFixed(2));
-        rating.push({ key, ecoRate })
-    }
-    //sorting the economy rate
-    rating.sort((a, b) => parseFloat(a.ecoRate) - parseFloat(b.ecoRate));
-    // Get the top 10 economical bowlers
-    const top10Bowlers = rating.slice(0, 10);
-
-    return top10Bowlers;
-
+    return top10EconomicalBowlers
 }
 
 
